@@ -69,7 +69,8 @@ function user_update(user, x) {
 				<div class="container" id="c{num}"> 
 				<div class="row line">
 					<div class="span1 columns userpic" />
-    				<div class="span1 columns user">Your question: {new.text}?</>
+    				<div class="span14 columns user">Your question: {new.text}?</>
+    			</div>
     			</div>
 			} else {
 				<div class="container" id="c{num}"> 
