@@ -3,6 +3,7 @@
 
 import stdlib.themes.bootstrap
 
+INIT_POINTS = 200;
 ASK_POINTS = 50;
 WIN_POINTS = 100;
 LOSE_POINTS = 25;
@@ -24,7 +25,7 @@ server function check(num, answer) {
 
 function user_points(u) {
 	match (?/users[u]) {
-		case { none }: 0;
+		case { none }: INIT_POINTS;
 		case { some: { ~points } }: points;
 	}
 }
@@ -42,30 +43,31 @@ server function post_question(q) {
 	}
 }
 
-server post_answer(num, user, answer) {
+server function post_answer(num, user, answer, _) {
 	if (check(num, answer)) {
 		/questions[num] <- { /questions[num] with open: false };
 		u = /users[user];
-		/users[user] <- { u with points = u.points + WIN_POINTS; };
+		/users[user] <- { points: u.points + WIN_POINTS };
 		Network.broadcast({ solved: num, by: user })
 	} else {
 		u = /users[user];
-		/users[user] <- { u with points = u.points - LOOSE_POINTS; };
+		/users[user] <- { points: u.points - LOOSE_POINTS };
 		Network.broadcast({ wrong: num, fool: user })
 	}
 }
 
 client function user_update(user, x) {
-    line = match (x) {
+    match (x) {
     	case { ~new, ~num }:	
 			line =
 				<div class="container" id="c{num}"> 
 				<div class="row line">
 					<div class="span1 columns userpic" />
     				<div class="span1 columns user">{new.text}?</>
-					<div class="span13 columns message"><input id="q{num}" onnewline={post_answer(num, user, Dom.get_value("q{num}")}/></>
+					<div class="span13 columns message"><input id="q{num}" onnewline={post_answer(num, user, Dom.get_value("q{num}"), _)}/></>
 				</div>
 				</div>;
+			#conversation =+ line;
 		case { ~solved, ~by }:
 			message = 
 				if (by == user) { "Congratulations. You win that one." }
@@ -95,7 +97,7 @@ function main() {
 		question = Dom.get_value(#question);
 		answer = Dom.get_value(#answer);
 		output = post_question({~author, ~question, ~answer});
-		#
+		#feedback = output;
 	};	
 	<div class="topbar"><div class="fill"><div class="container">
 		<div id=#logo />
@@ -107,6 +109,7 @@ function main() {
 		<input id=#question onnewline={Dom.give_focus(#question)}/>
 		<input id=#answer onnewline={send}/>
 		<div class="btn primary" onclick={send}>Post</div>
+		<div id="feedback"/>
 	</div></div>
 }
 
