@@ -1,5 +1,6 @@
 // TODO: don't go into negative territory
 // display user points in real time
+// question timer: disappear in 30 sec
 
 // import stdlib.themes.bootstrap
 
@@ -85,10 +86,11 @@ function user_update(user, x) {
 			} ;
 			#conversation =+ line;
 		case { ~solved, ~by }:
+			q = get_question(solved);
 			message = 
 				if (by == user) { "Congratulations. You win that one." }
+				else if (user == q.author) { "{by} found the answer to your question" }
 				else { "You should have been faster. This question was solved by {by}." };
-			q = get_question(solved);
 			#{"c{solved}"} = 
 				<div class="row line">Q: {q.text}</>
 				<div class="row line">A: {q.answer}</>
