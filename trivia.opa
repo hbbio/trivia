@@ -10,7 +10,7 @@ LOSE_POINTS = 25;
 
 type question = { string author, string text, string answer, bool open }
 type user = { int points }
-type event = { question new, int num } or { int wrong, string fool } or { int solved, string by }
+type event = { question new, int num, string author } or { int wrong, string fool } or { int solved, string by }
 
 database intmap(question) /questions;
 database /questions[_]/open = { false }
@@ -38,7 +38,7 @@ server function post_question(q) {
 		num = /count + 1;
 		/count <- num;
 		/questions[num] <- q;
-		Network.broadcast({ new: q, ~num }, room);
+		Network.broadcast({ new: q, ~num, author: q.author }, room);
 		"Posted"
 	} else {
 		"Not enough points"
@@ -64,8 +64,14 @@ function get_question(solved) {
 
 function user_update(user, x) {
     match (x) {
-    	case { ~new, ~num }:	
-			line =
+    	case { ~new, ~num, ~author }:	
+			line = if (user == author) {
+				<div class="container" id="c{num}"> 
+				<div class="row line">
+					<div class="span1 columns userpic" />
+    				<div class="span1 columns user">Your question: {new.text}?</>
+    			</div>
+			} else {
 				<div class="container" id="c{num}"> 
 				<div class="row line">
 					<div class="span1 columns userpic" />
@@ -74,7 +80,8 @@ function user_update(user, x) {
 					<input id="q{num}" onnewline={post_answer(num, user, Dom.get_value(#{"q{num}"}), _)}/>
 					</div>
 				</div>
-				</div>;
+				</div>
+			} ;
 			#conversation =+ line;
 		case { ~solved, ~by }:
 			message = 
@@ -89,6 +96,7 @@ function user_update(user, x) {
 			message = 
 				if (fool == user) { "Oh no, you're making a fool out of yourself." }
 				else { "{fool} ridiculously fails answering that one." };
+				// display the wrong answer?
 			#{"c{wrong}"} =+ <div>{message}</div>;
 	}			
 }
@@ -122,7 +130,5 @@ function main() {
 
 Server.start(
 	Server.http,
-	[ { resources: @static_resource_directory("resources") },
-	  { register: ["resources/css.css"] },
-	  { title: "SocialTrivia", page: main } ]
+	[ { title: "SocialTrivia", page: main } ]
 )
