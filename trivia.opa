@@ -62,7 +62,7 @@ function get_question(solved) {
 	/questions[solved]
 }
 
-client function user_update(user, x) {
+function user_update(user, x) {
     match (x) {
     	case { ~new, ~num }:	
 			line =
