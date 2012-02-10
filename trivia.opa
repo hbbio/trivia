@@ -13,6 +13,7 @@ type user = { int points }
 type event = { question new, int num } or { int wrong, string fool } or { int solved, string by }
 
 database intmap(question) /questions;
+database /questions[_]/open = { false }
 database stringmap(user) /users;
 database int /count = 0;
 
@@ -95,7 +96,7 @@ function main() {
 	send = function(_) {
 		question = Dom.get_value(#question);
 		answer = Dom.get_value(#answer);
-		output = post_question({~author, ~question, ~answer});
+		output = post_question({~author, ~question, ~answer, open: true});
 		#feedback = output;
 	};	
 	<div class="topbar"><div class="fill"><div class="container">
