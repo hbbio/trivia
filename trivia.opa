@@ -58,6 +58,10 @@ server function post_answer(num, user, answer, _) {
 	}
 }
 
+function get_question(solved) {
+	/questions[solved]
+}
+
 client function user_update(user, x) {
     match (x) {
     	case { ~new, ~num }:	
@@ -76,7 +80,7 @@ client function user_update(user, x) {
 			message = 
 				if (by == user) { "Congratulations. You win that one." }
 				else { "You should have been faster. This question was solved by {by}." };
-			q = /questions[solved];
+			q = get_question(solved);
 			#{"c{solved}"} = 
 				<div class="row line">Q: {q.text}</>
 				<div class="row line">A: {q.answer}</>
