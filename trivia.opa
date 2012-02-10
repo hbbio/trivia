@@ -1,4 +1,4 @@
-// TODO: don't go into negative territory
+// TODO: don't go into negative territory?
 // display user points in real time
 // question timer: disappear in 30 sec
 

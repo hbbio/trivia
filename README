@@ -1,0 +1,11 @@
+Trivia is an online social game, currently a very basic proof of concept.
+Currently, there is no SSO, should be FB connect later.
+
+Users have to find the right answer to questions asked by other users.
+
+Users start with 200 points.
+Asking a question costs 50 points.
+Answering a question give you 100 points.
+
+Questions should have a timeout.
+Asker also get 100 points if the question is answered before the timeout.
