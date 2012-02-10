@@ -1,7 +1,7 @@
 // TODO: don't go into negative territory
 // display user points in real time
 
-import stdlib.themes.bootstrap
+// import stdlib.themes.bootstrap
 
 INIT_POINTS = 200;
 ASK_POINTS = 50;
