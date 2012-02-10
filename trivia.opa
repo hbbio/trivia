@@ -33,7 +33,8 @@ function user_points(u) {
 
 server function post_question(q) {
 	if (user_points(q.author) >= ASK_POINTS) {
-		/users[q.author] <- /users[q.author] - ASK_POINTS;
+		user = /users[q.author];
+		/users[q.author] <- { user with points = user.points - ASK_POINTS };
 		num = /count + 1;
 		/count <- num;
 		/questions[num] <- q;
