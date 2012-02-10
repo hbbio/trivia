@@ -10,7 +10,7 @@ LOSE_POINTS = 25;
 
 type question = { string author, string text, string answer, bool open }
 type user = { int points }
-type event = { question new, int num } or { int wrong, strong fool } or { int solved, string by }
+type event = { question new, int num } or { int wrong, string fool } or { int solved, string by }
 
 database intmap(question) /questions;
 database stringmap(user) /users;
@@ -36,7 +36,7 @@ server function post_question(q) {
 		num = /count + 1;
 		/count <- num;
 		/questions[num] <- q;
-		Network.broadcast({ question: q, num: int }, room);
+		Network.broadcast({ question: q, num }, room);
 		"Posted"
 	} else {
 		"Not enough points"
@@ -51,7 +51,7 @@ server function post_answer(num, user, answer, _) {
 		Network.broadcast({ solved: num, by: user })
 	} else {
 		u = /users[user];
-		/users[user] <- { points: u.points - LOOSE_POINTS };
+		/users[user] <- { points: u.points - LOSE_POINTS };
 		Network.broadcast({ wrong: num, fool: user })
 	}
 }
@@ -72,17 +72,16 @@ client function user_update(user, x) {
 			message = 
 				if (by == user) { "Congratulations. You win that one." }
 				else { "You should have been faster. This question was solved by {by}." };
-			#{"c{num}"} = 
-				<div class="row line">
-					<div class="span1 columns userpic" />
-    				<div class="span1 columns user">{new.text}?</>
-					<div class="span13 columns message">{message}</>
-				</div>
+			q = /questions[solved];
+			#{"c{solved}"} = 
+				<div class="row line">Q: {q.text}</>
+				<div class="row line">A: {q.answer}</>
+				<div class="row line"><div class="message">{message}</></>;
 		case { ~wrong, ~fool }:
 			message = 
-				if (by == user) { "Oh no, you're making a fool out of yourself." }
+				if (fool == user) { "Oh no, you're making a fool out of yourself." }
 				else { "{fool} ridiculously fails answering that one." };
-			#{"c{num}"} =+ <div>{message}</div>;
+			#{"c{wrong}"} =+ <div>{message}</div>;
 	}			
 }
 
