@@ -99,7 +99,7 @@ function main() {
 	send = function(_) {
 		question = Dom.get_value(#question);
 		answer = Dom.get_value(#answer);
-		output = post_question({~author, ~question, ~answer, open: true});
+		output = post_question({~author, text: question, ~answer, open: true});
 		#feedback = output;
 	};	
 	<div class="topbar"><div class="fill"><div class="container">
