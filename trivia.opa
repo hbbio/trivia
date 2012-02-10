@@ -109,7 +109,7 @@ function main() {
 		function(_) { Network.add_callback(user_update(author, _), room); } 
 	}></div>
 	<div id=#footer><div class="container">
-		<input id=#question onnewline={Dom.give_focus(#question)}/>
+		<input id=#question onnewline={function(_) { Dom.give_focus(#question) } }/>
 		<input id=#answer onnewline={send}/>
 		<div class="btn primary" onclick={send}>Post</div>
 		<div id="feedback"/>
