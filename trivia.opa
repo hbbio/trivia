@@ -38,7 +38,7 @@ server function post_question(q) {
 		num = /count + 1;
 		/count <- num;
 		/questions[num] <- q;
-		Network.broadcast({ question: q, ~num }, room);
+		Network.broadcast({ new: q, ~num }, room);
 		"Posted"
 	} else {
 		"Not enough points"
@@ -50,11 +50,11 @@ server function post_answer(num, user, answer, _) {
 		/questions[num] <- { /questions[num] with open: false };
 		u = /users[user];
 		/users[user] <- { points: u.points + WIN_POINTS };
-		Network.broadcast({ solved: num, by: user })
+		Network.broadcast({ solved: num, by: user }, room)
 	} else {
 		u = /users[user];
 		/users[user] <- { points: u.points - LOSE_POINTS };
-		Network.broadcast({ wrong: num, fool: user })
+		Network.broadcast({ wrong: num, fool: user }, room)
 	}
 }
 
@@ -66,7 +66,9 @@ client function user_update(user, x) {
 				<div class="row line">
 					<div class="span1 columns userpic" />
     				<div class="span1 columns user">{new.text}?</>
-					<div class="span13 columns message"><input id="q{num}" onnewline={post_answer(num, user, Dom.get_value("q{num}"), _)}/></>
+					<div class="span13 columns message">
+					<input id="q{num}" onnewline={post_answer(num, user, Dom.get_value(#{"q{num}"}), _)}/>
+					</div>
 				</div>
 				</div>;
 			#conversation =+ line;
