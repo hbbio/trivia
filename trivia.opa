@@ -2,7 +2,7 @@
 // display user points in real time
 // question timer: disappear in 30 sec
 
-// import stdlib.themes.bootstrap
+import stdlib.themes.bootstrap
 
 INIT_POINTS = 200;
 ASK_POINTS = 50;
@@ -20,7 +20,7 @@ database int /count = 0;
 
 Network.network(event) room = Network.cloud("room");
 
-server function check(num, answer) {
+function check(num, answer) {
 	question = /questions[num];
 	question.open && answer == question.answer;
 }
@@ -32,7 +32,7 @@ function user_points(u) {
 	}
 }
 
-server function post_question(q) {
+function post_question(q) {
 	if (user_points(q.author) >= ASK_POINTS) {
 		user = /users[q.author];
 		/users[q.author] <- { user with points: user.points - ASK_POINTS };
@@ -46,7 +46,7 @@ server function post_question(q) {
 	}
 }
 
-server function post_answer(num, user, answer, _) {
+function post_answer(num, user, answer, _) {
 	if (check(num, answer)) {
 		/questions[num] <- { /questions[num] with open: false };
 		u = /users[user];
